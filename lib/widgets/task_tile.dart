@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class TaskTile extends StatelessWidget {
-  TaskTile({this.taskTitle, this.isChecked, this.checkboxCallback});
+  TaskTile({this.taskTitle, this.isChecked, this.checkboxCallback, this.onLongPressCallback});
 
   final String taskTitle;
   final bool isChecked;
   final Function checkboxCallback;
+  final Function onLongPressCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +23,7 @@ class TaskTile extends StatelessWidget {
         value: isChecked,
         onChanged: checkboxCallback,
       ),
+      onLongPress: onLongPressCallback,
     );
   }
 }

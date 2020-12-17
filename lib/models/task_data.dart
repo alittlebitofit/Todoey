@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'models/task.dart';
+import 'task.dart';
 
 class Data extends ChangeNotifier {
 
   final List<Task> _tasksList = [
     Task(name: 'Buy milk'),
     Task(name: 'Buy chocolate'),
-    Task(name: 'Buy chips'),
   ];
 
   void addNewTask(String newTaskTitle){
@@ -18,7 +17,16 @@ class Data extends ChangeNotifier {
     return _tasksList[index];
   }
 
-  int getTotalTasks(){
-    return _tasksList.length;
+  int get tasksCount => _tasksList.length;
+
+  void checkOff(int index){
+    _tasksList[index].toggleDone();
+    notifyListeners();
   }
+
+  void deleteTask(int index){
+    _tasksList.removeAt(index);
+    notifyListeners();
+  }
+
 }

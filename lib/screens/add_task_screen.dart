@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-import 'package:todoey_app/data.dart';
+import 'package:todoey_app/models/task_data.dart';
 
 class AddTaskScreen extends StatelessWidget {
   final TextEditingController _textEditingController = TextEditingController();
@@ -60,6 +60,7 @@ class AddTaskScreen extends StatelessWidget {
                           .addNewTask(task);
                     }
                     Navigator.pop(context);
+                    // _textEditingController.dispose();
                   },
                   child: Text(
                     'Add',

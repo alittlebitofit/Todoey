@@ -3,14 +3,9 @@ import 'package:todoey_app/widgets/tasks_list.dart';
 import 'add_task_screen.dart';
 
 import 'package:provider/provider.dart';
-import 'package:todoey_app/data.dart';
+import 'package:todoey_app/models/task_data.dart';
 
-class TasksScreen extends StatefulWidget {
-  @override
-  _TasksScreenState createState() => _TasksScreenState();
-}
-
-class _TasksScreenState extends State<TasksScreen> {
+class TasksScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +69,7 @@ class _TasksScreenState extends State<TasksScreen> {
                     ),
                   ),
                   Text(
-                    '${_dataProvider.getTotalTasks()} ${_dataProvider.getTotalTasks() != 1 ? "Tasks" : "Task"}',
+                    '${_dataProvider.tasksCount} ${_dataProvider.tasksCount != 1 ? "Tasks" : "Task"}',
                     style: TextStyle(
                       fontSize: 25,
                       color: Colors.white,
