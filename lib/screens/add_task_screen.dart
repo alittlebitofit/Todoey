@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+import 'package:todoey_app/data.dart';
+
 class AddTaskScreen extends StatelessWidget {
-  final Function addTaskCallback;
-
-  AddTaskScreen(this.addTaskCallback);
-
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
@@ -57,12 +56,10 @@ class AddTaskScreen extends StatelessWidget {
                   onPressed: () {
                     final task = _textEditingController.text;
                     if (task.isNotEmpty) {
-                      addTaskCallback(task);
-                    } else {
-                      print('new task is gonna be null yo');
-                      // addTaskCallback();
-                      Navigator.pop(context);
+                      Provider.of<Data>(context, listen: false)
+                          .addNewTask(task);
                     }
+                    Navigator.pop(context);
                   },
                   child: Text(
                     'Add',

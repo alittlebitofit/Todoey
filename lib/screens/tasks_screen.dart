@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:todoey_app/widgets/tasks_list.dart';
 import 'add_task_screen.dart';
 
-import 'package:todoey_app/models/task.dart';
+import 'package:provider/provider.dart';
+import 'package:todoey_app/data.dart';
 
 class TasksScreen extends StatefulWidget {
   @override
@@ -11,14 +12,11 @@ class TasksScreen extends StatefulWidget {
 
 class _TasksScreenState extends State<TasksScreen> {
 
-  final List<Task> tasksList = [
-    // Task(name: 'Buy milk'),
-    // Task(name: 'Buy chocolate'),
-    // Task(name: 'Buy chips'),
-  ];
-
   @override
   Widget build(BuildContext context) {
+
+    Data _dataProvider = Provider.of<Data>(context);
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -30,13 +28,7 @@ class _TasksScreenState extends State<TasksScreen> {
                 bottom: MediaQuery.of(context).viewInsets.bottom,
               ),
               child: Container(
-                child: AddTaskScreen(
-                  (newTaskTitle) {
-                    tasksList.add(Task(name: newTaskTitle));
-                    Navigator.pop(context);
-                    setState(() {});
-                  },
-                ),
+                child: AddTaskScreen(),
               ),
             ),
           );
@@ -82,8 +74,7 @@ class _TasksScreenState extends State<TasksScreen> {
                     ),
                   ),
                   Text(
-                    // tasksList.length != 1 ? '${tasksList.length} Tasks' : '1 Task',
-                    '${tasksList.length} ${tasksList.length != 1 ? "Tasks" : "Task"}',
+                    '${_dataProvider.getTotalTasks()} ${_dataProvider.getTotalTasks() != 1 ? "Tasks" : "Task"}',
                     style: TextStyle(
                       fontSize: 25,
                       color: Colors.white,
@@ -102,7 +93,7 @@ class _TasksScreenState extends State<TasksScreen> {
                   left: 20,
                   right: 20,
                 ),
-                child: TasksList(tasksList: tasksList),
+                child: TasksList(),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
