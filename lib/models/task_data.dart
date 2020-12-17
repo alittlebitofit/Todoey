@@ -3,10 +3,7 @@ import 'task.dart';
 
 class Data extends ChangeNotifier {
 
-  final List<Task> _tasksList = [
-    Task(name: 'Buy milk'),
-    Task(name: 'Buy chocolate'),
-  ];
+  final List<Task> _tasksList = [];
 
   void addNewTask(String newTaskTitle){
     _tasksList.add(Task(name:newTaskTitle));
