@@ -16,7 +16,7 @@ class Data extends ChangeNotifier {
 
   int get tasksCount => _tasksList.length;
 
-  void checkOff(int index){
+  void updateCheckbox(int index){
     _tasksList[index].toggleDone();
     notifyListeners();
   }
