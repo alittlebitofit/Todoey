@@ -59,7 +59,7 @@ class AddTaskScreen extends StatelessWidget {
                       Provider.of<Data>(context, listen: false)
                           .addNewTask(task);
                     }
-                    Navigator.pop(context);
+                    Navigator.pop(context, task.toString());
                     // _textEditingController.dispose();
                   },
                   child: Text(

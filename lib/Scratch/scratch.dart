@@ -19,18 +19,22 @@ class TasksScreen extends StatelessWidget {
 
 
   void test() async {
+
     var fido = Dog(
       name: 'Fido',
       age: 35,
     );
 
     // Insert a dog into the database.
-    // await insertDog(fido);
+    await fido.insertDog();
+    print('dogTask is inserted maybe?');
 
     // Print the list of dogs (only Fido for now).
-    print(await fido.fetchAllDogs());
+    // print(await fido.fetchAllDogs());
+    // await fido.fetchAllDogs();
 
     // Update Fido's age and save it to the database.
+    await fido.updateDogName(newName: (fido.getDogName()));
     await fido.updateDogAge(newAge: (fido.getDogAge() + 7));
 
     // = Dog(
@@ -41,16 +45,18 @@ class TasksScreen extends StatelessWidget {
     // await updateDog(fido);
 
     // Print Fido's updated information.
-    print(await fido.fetchAllDogs());
+    // print(await fido.fetchAllDogs());
 
     // Delete Fido from the database.
     await fido.deleteDog();
 
     // Print the list of dogs (empty).
-    print(await fido.fetchAllDogs());
+    // print(await fido.fetchAllDogs());
 
     // TODO
     // try calling fido again since its deleted
+    print(await fido.fetchAllDogs());
+    // await fido.fetchAllDogs();
   }
 
 
@@ -60,7 +66,7 @@ class TasksScreen extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
 
           print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
           print('FAB pressed');
@@ -68,7 +74,7 @@ class TasksScreen extends StatelessWidget {
 
           test();
 
-          showModalBottomSheet(
+          var dogTask = await showModalBottomSheet(
             isScrollControlled: true,
             context: context,
             builder: (context) =>
@@ -84,6 +90,13 @@ class TasksScreen extends StatelessWidget {
                   ),
                 ),
           );
+
+          if(dogTask.toString().isNotEmpty) {
+            Dog newDog = Dog(name: dogTask);
+            await newDog.insertDog();
+            print('dogTask is inserted maybe twice?');
+            print(await newDog.fetchAllDogs());
+          }
         },
         backgroundColor: Colors.lightBlueAccent,
         child: Icon(

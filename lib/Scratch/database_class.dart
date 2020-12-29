@@ -9,7 +9,7 @@ class DatabaseClass {
 
   // DatabaseClass._();
   DatabaseClass() {
-    _databaseDemo();
+    // _initiateDB();
   }
   
   // Future<Database> newDatabase() async {
@@ -17,7 +17,13 @@ class DatabaseClass {
   //   return _database;
   // }
 
-  void _databaseDemo() async {
+  Future<void> initiateDB() async {
+
+    if(_database != null) {
+      print('already initiated');
+      return;
+    }
+
     // Avoid errors caused by flutter upgrade.
     // Importing 'package:flutter/widgets.dart' is required.
     WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +36,7 @@ class DatabaseClass {
       join(await getDatabasesPath(), 'doggie_database.db'),
       // When the database is first created, create a table to store dogs.
       onCreate: (db, version) {
+        print('initiating ... ???');
         return db.execute(
           "CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, age INTEGER)",
         );
@@ -38,6 +45,8 @@ class DatabaseClass {
       // path to perform database upgrades and downgrades.
       version: 1,
     );
+
+    print('initiating for first time');
   }
 
   Future<bool> insertDog(Dog dog) async {
@@ -61,17 +70,17 @@ class DatabaseClass {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    print('new dog inserted2');
+    print('new dog inserted in insertDog() in database_class.dart');
     return true;
   }
 
-  Future<List<Dog>> fetchAllDogsFromDB() async {
+  Future<List<Map<String, dynamic>>> fetchAllDogsFromDB() async {
     // Get a reference to the database.
     final Database db = await _database;
 
     if(db == null) {
       print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-      print('db is null in fetchAllDogs() in database_class.dart');
+      print('db is null in fetchAllDogsFromDB() in database_class.dart');
       print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
       return null;
     }
@@ -79,19 +88,21 @@ class DatabaseClass {
     // Query the table for all The Dogs.
     final List<Map<String, dynamic>> maps = await db.query('dogs');
 
-    // TODO
-    // BUT IT ALSO "CREATES" NEW DOGS - fix it
-    // Convert the List<Map<String, dynamic> into a List<Dog>.
-    return List.generate(maps.length, (i) {
-      return Dog(
-        // _id: maps[i]['id'],
-        name: maps[i]['name'],
-        age: maps[i]['age'],
-      );
-    });
+    return maps;
+
+    // // TODO
+    // // BUT IT ALSO "CREATES" NEW DOGS - fix it
+    // // Convert the List<Map<String, dynamic> into a List<Dog>.
+    // return List.generate(maps.length, (i) {
+    //   return Dog(
+    //     // _id: maps[i]['id'],
+    //     name: maps[i]['name'],
+    //     age: maps[i]['age'],
+    //   );
+    // });
   }
 
-  Future<void> updateDog(Dog dog) async {
+  Future<bool> updateDog(Dog dog) async {
     // Get a reference to the database.
     final db = await _database;
 
@@ -99,7 +110,7 @@ class DatabaseClass {
       print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
       print('db is null in updateDog() in database_class.dart');
       print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-      return;
+      return false;
     }
 
     // Update the given Dog.
@@ -111,9 +122,12 @@ class DatabaseClass {
       // Pass the Dog's id as a whereArg to prevent SQL injection.
       whereArgs: [dog.getDogID()],
     );
+
+    print('update seems to be successful so return true');
+    return true;
   }
 
-  Future<void> deleteDog(int id) async {
+  Future<bool> deleteDog(int id) async {
     // Get a reference to the database.
     final db = await _database;
 
@@ -121,7 +135,7 @@ class DatabaseClass {
       print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
       print('db is null in deleteDog() in database_class.dart');
       print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-      return;
+      return false;
     }
 
     // Remove the Dog from the database.
@@ -132,6 +146,9 @@ class DatabaseClass {
       // Pass the Dog's id as a whereArg to prevent SQL injection.
       whereArgs: [id],
     );
+
+    return true;
+
   }
 
   // void test() async {
