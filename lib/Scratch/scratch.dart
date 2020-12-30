@@ -27,15 +27,15 @@ class TasksScreen extends StatelessWidget {
 
     // Insert a dog into the database.
     await fido.insertDog();
-    print('dogTask is inserted maybe?');
+    print('dog is inserted maybe?');
 
     // Print the list of dogs (only Fido for now).
     // print(await fido.fetchAllDogs());
     // await fido.fetchAllDogs();
 
     // Update Fido's age and save it to the database.
-    await fido.updateDogName(newName: (fido.getDogName()));
-    await fido.updateDogAge(newAge: (fido.getDogAge() + 7));
+    await fido.updateDogName(newName: ('fido.getDogName()'));
+    await fido.updateDogAge(newAge: (fido.age + 7));
 
     // = Dog(
     //   name: fido._name,
@@ -48,15 +48,20 @@ class TasksScreen extends StatelessWidget {
     // print(await fido.fetchAllDogs());
 
     // Delete Fido from the database.
-    await fido.deleteDog();
+    // await fido.deleteDog();
 
     // Print the list of dogs (empty).
     // print(await fido.fetchAllDogs());
 
     // TODO
     // try calling fido again since its deleted
-    print(await fido.fetchAllDogs());
+    print(await Dog.fetchAllDogs());
     // await fido.fetchAllDogs();
+
+    // Dog.deleteAllDogs();
+
+    // Dog.deleteDatabase();
+
   }
 
 
@@ -72,7 +77,7 @@ class TasksScreen extends StatelessWidget {
           print('FAB pressed');
           print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
 
-          test();
+
 
           var dogTask = await showModalBottomSheet(
             isScrollControlled: true,
@@ -91,12 +96,15 @@ class TasksScreen extends StatelessWidget {
                 ),
           );
 
-          if(dogTask.toString().isNotEmpty) {
-            Dog newDog = Dog(name: dogTask);
-            await newDog.insertDog();
-            print('dogTask is inserted maybe twice?');
-            print(await newDog.fetchAllDogs());
-          }
+          test();
+
+
+          // if(dogTask.toString().isNotEmpty) {
+          //   Dog newDog = Dog(name: dogTask);
+          //   await newDog.insertDog();
+          //   print('dogTask is inserted maybe twice?');
+          //   print(await Dog.fetchAllDogs());
+          // }
         },
         backgroundColor: Colors.lightBlueAccent,
         child: Icon(

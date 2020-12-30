@@ -10,11 +10,13 @@ class Dog {
 
   // Future<Database> db;
 
-  static final List<Dog> _existingDogsList = [];
+  static List<Dog> _existingDogsList;
 
   int _id;
   String _name;
   int _age;
+  
+  static bool _isAlreadyInitiated = false;
 
   Dog({@required String name, int age}) {
     _dogNumber++;
@@ -27,11 +29,19 @@ class Dog {
   }
 
   Future<void> _initiate() async {
-    await _dataBaseClass.initiateDB();
+    if(await _dataBaseClass.initiateDB()) {
+      print('database initiated successfully');
+      _existingDogsList = [];
+      _isAlreadyInitiated = true;
+    } else {
+      print('either db already exists or failed to open');
+    }
   }
 
   Future<void> insertDog() async {
-    await _initiate();
+    if(!_isAlreadyInitiated) {
+      await _initiate();
+    }
     if (await _dataBaseClass.insertDog(this)) {
       _existingDogsList.add(this);
       print('Dog inserted with id ${this._id}');
@@ -48,7 +58,7 @@ class Dog {
     };
   }
 
-  Future<List<Dog>> fetchAllDogs() async {
+  static Future<List<Dog>> fetchAllDogs() async {
     List<Map<String, dynamic>> maps = await _dataBaseClass.fetchAllDogsFromDB();
 
     if (maps == null) {
@@ -119,7 +129,7 @@ class Dog {
     if(await _dataBaseClass.updateDog(this)){
       print('update with $newName successful');
     } else {
-      print('$newName couldn\'t be updated');
+      print('$newName\'s name couldn\'t be updated');
       _name = _tempOldName;
     }
 
@@ -131,12 +141,12 @@ class Dog {
     if(await _dataBaseClass.updateDog(this)){
       print('update with $newAge successful');
     } else {
-      print('$newAge couldn\'t be updated');
+      print('$_name\'s new age $newAge couldn\'t be updated');
       _age = _tempOldAge;
     }
   }
 
-  int getDogAge() => _age;
+  int get age => _age;
   String getDogName() => _name;
   int getDogID() => _id;
 
@@ -148,6 +158,26 @@ class Dog {
       print('failed to delete dog for some reason');
     }
   }
+
+  static void deleteAllDogs() async {
+    if(await _dataBaseClass.deleteAllDogsDB('dogs')) {
+        print('all dogs gone');
+        _existingDogsList.clear();
+    } else {
+      print('couldn\'t delete all dogs');
+    }
+  }
+
+  static void deleteDatabase() async {
+    if (await _dataBaseClass.deleteEntireDatabase()) {
+      print('entire db deleted');
+      _existingDogsList = null;
+      _isAlreadyInitiated = false;
+    } else {
+      print('couldn\'t delete entire db');
+    }
+  }
+
 
   // TODO
   // return existing dog, but how? -> by keeping track of existing dogs' IDs

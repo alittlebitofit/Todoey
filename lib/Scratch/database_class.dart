@@ -7,38 +7,68 @@ import 'dog_class.dart';
 class DatabaseClass {
   Future<Database> _database;
 
+  static int _counterInitiateDB = 0;
+  static int _counterInsertDog = 0;
+  static int _counterFetchDogs = 0;
+  static int _counterUpdateDog = 0;
+  static int _counterDeleteDog = 0;
+  static int _counterDeleteDogs = 0;
+  static int _counterDatabase = 0;
+
+  // Get a location using getDatabasesPath
+  var _databasesPath;
+  String _path;
+
   // DatabaseClass._();
-  DatabaseClass() {
-    // _initiateDB();
-  }
+  // DatabaseClass() {
+  //   // _initiateDB();
+  // }
   
   // Future<Database> newDatabase() async {
   //   _database = await _databaseDemo();
   //   return _database;
   // }
 
-  Future<void> initiateDB() async {
+  Future<bool> initiateDB() async {
+
+    _counterInitiateDB++;
+    print('_counterInitiateDB: $_counterInitiateDB');
 
     if(_database != null) {
       print('already initiated');
-      return;
+      return false;
     }
 
     // Avoid errors caused by flutter upgrade.
     // Importing 'package:flutter/widgets.dart' is required.
     WidgetsFlutterBinding.ensureInitialized();
 
+
+
+    _databasesPath = await getDatabasesPath();
+    print('_databasesPath: $_databasesPath');
+    _path = join(_databasesPath, 'doggie_database.db');
+    print('_path: $_path');
+
+    // if(await databaseExists(_path)) {
+    // // if(_database != null) {
+    //   // (await _database).close();
+    //   // await deleteDatabase(_path);
+    //   print('database already exits');
+    //   return false;
+    // }
+
     // Open the database and store the reference.
     _database = openDatabase(
       // Set the path to the database. Note: Using the `join` function from the
       // `path` package is best practice to ensure the path is correctly
       // constructed for each platform.
-      join(await getDatabasesPath(), 'doggie_database.db'),
+      _path,
       // When the database is first created, create a table to store dogs.
       onCreate: (db, version) {
         print('initiating ... ???');
         return db.execute(
-          "CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, age INTEGER)",
+          "CREATE TABLE IF NOT EXISTS dogs(id INTEGER PRIMARY KEY, name TEXT, age INTEGER)",
         );
       },
       // Set the version. This executes the onCreate function and provides a
@@ -47,9 +77,15 @@ class DatabaseClass {
     );
 
     print('initiating for first time');
+    return true;
   }
 
   Future<bool> insertDog(Dog dog) async {
+
+
+    _counterInsertDog++;
+    print('_counterInsertDog: $_counterInsertDog');
+
     // Get a reference to the database.
     final Database db = await _database;
 
@@ -75,6 +111,10 @@ class DatabaseClass {
   }
 
   Future<List<Map<String, dynamic>>> fetchAllDogsFromDB() async {
+
+    _counterFetchDogs++;
+    print('_counterFetchDogs: $_counterFetchDogs');
+
     // Get a reference to the database.
     final Database db = await _database;
 
@@ -103,6 +143,10 @@ class DatabaseClass {
   }
 
   Future<bool> updateDog(Dog dog) async {
+
+    _counterUpdateDog++;
+    print('_counterUpdateDog: $_counterUpdateDog');
+
     // Get a reference to the database.
     final db = await _database;
 
@@ -128,6 +172,10 @@ class DatabaseClass {
   }
 
   Future<bool> deleteDog(int id) async {
+
+    _counterDeleteDog++;
+    print('_counterDeleteDog: $_counterDeleteDog');
+
     // Get a reference to the database.
     final db = await _database;
 
@@ -148,6 +196,48 @@ class DatabaseClass {
     );
 
     return true;
+
+  }
+
+
+  Future<bool> deleteAllDogsDB(String tableName) async {
+
+    _counterDeleteDogs++;
+    print('_counterDeleteDogs: $_counterDeleteDogs');
+
+    final db = await _database;
+
+    if(db == null) {
+      print('db null in deleteAllDogs() in database_class.dart');
+      return false;
+    }
+
+    await db.delete(tableName);
+
+    return true;
+
+  }
+
+  Future<bool> deleteEntireDatabase() async {
+
+    _counterDatabase++;
+    print('_counterDatabase: $_counterDatabase');
+
+    final db = await _database;
+
+    if(db == null) {
+      print('db null in clearDatabase() in database_class.dart');
+      return false;
+    }
+
+    if(await databaseExists(_path)) {
+      db.close();
+      await deleteDatabase(_path);
+      _database = null;
+      return true;
+    }
+
+    return false;
 
   }
 
