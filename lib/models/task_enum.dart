@@ -1,0 +1,4 @@
+enum TaskEnum {
+  ADD,
+  EDIT,
+}

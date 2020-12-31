@@ -37,6 +37,11 @@ class Data extends ChangeNotifier {
     _saveData();
   }
 
+  void editTask({@required String newTitle, @required int index}) {
+    _tasksList[index].name = newTitle;
+    _saveData();
+  }
+
   Task getTask(int index){
     return _tasksList[index];
   }
