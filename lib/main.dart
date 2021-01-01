@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// import 'Scratch/scratch.dart';
-
 import 'package:todoey_app/screens/tasks_screen.dart';
 import 'models/task_data.dart';
 

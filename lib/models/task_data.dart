@@ -6,11 +6,10 @@ import 'task.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Data extends ChangeNotifier {
-
   List<Task> _tasksList = [];
   SharedPreferences _sharedPreferences;
 
-  Data(){
+  Data() {
     initSharedPreferences();
   }
 
@@ -20,7 +19,8 @@ class Data extends ChangeNotifier {
   }
 
   void _saveData() {
-    List<String> _spList = _tasksList.map((item) => jsonEncode(item.toMap())).toList();
+    List<String> _spList =
+        _tasksList.map((item) => jsonEncode(item.toMap())).toList();
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ $_spList');
     _sharedPreferences.setStringList('_tasksList', _spList);
     notifyListeners();
@@ -32,8 +32,14 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addNewTask(String newTaskTitle){
-    _tasksList.add(Task(name:newTaskTitle));
+  int get tasksCount => _tasksList.length;
+
+  Task getTask(int index) {
+    return _tasksList[index];
+  }
+
+  void addNewTask(String newTaskTitle) {
+    _tasksList.add(Task(name: newTaskTitle));
     _saveData();
   }
 
@@ -42,20 +48,23 @@ class Data extends ChangeNotifier {
     _saveData();
   }
 
-  Task getTask(int index){
-    return _tasksList[index];
-  }
-
-  int get tasksCount => _tasksList.length;
-
-  void updateCheckbox(int index){
+  void updateCheckbox(int index) {
     _tasksList[index].toggleDone();
     _saveData();
   }
 
-  void deleteTask(int index){
+  void deleteTask(int index) {
     _tasksList.removeAt(index);
     _saveData();
   }
 
+  void undoDeletion(int index, Task item) {
+    _tasksList.insert(index, item);
+    _saveData();
+  }
+
+  void deleteAllTasks() {
+    _tasksList.clear();
+    _saveData();
+  }
 }

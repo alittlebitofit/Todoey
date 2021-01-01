@@ -6,7 +6,8 @@ import 'package:todoey_app/models/task_data.dart';
 import 'package:todoey_app/models/task_enum.dart';
 
 class AddTaskScreen extends StatelessWidget {
-  AddTaskScreen({this.taskEnum = TaskEnum.ADD, this.index, this.taskString = ''});
+  AddTaskScreen(
+      {this.taskEnum = TaskEnum.ADD, this.index, this.taskString = ''});
 
   final TaskEnum taskEnum;
   final int index;
@@ -17,6 +18,19 @@ class AddTaskScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _textEditingController.text = taskString;
+
+    // // for cursor to be placed at the end while editing
+    // _textEditingController.selection = TextSelection.fromPosition(
+    //   TextPosition(
+    //     offset: _textEditingController.text.length,
+    //   ),
+    // );
+
+    // text should be selected while editing
+    _textEditingController.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: _textEditingController.text.length,
+    );
 
     return Container(
       color: Color(0xff757575),
@@ -45,22 +59,8 @@ class AddTaskScreen extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                // TextField(
-                //   controller: _textEditingController,
-                //   autofocus: true,
-                //   textAlign: TextAlign.center,
-                //   decoration: InputDecoration(
-                //     enabledBorder: UnderlineInputBorder(
-                //       borderSide: BorderSide(
-                //         color: Colors.lightBlueAccent,
-                //         width: 2,
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                TextFormField(
-                  // initialValue: taskString,
-                  controller: _textEditingController, // can't have both
+                TextField(
+                  controller: _textEditingController,
                   autofocus: true,
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
@@ -72,6 +72,20 @@ class AddTaskScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                // TextFormField(
+                //   // initialValue: taskString,
+                //   controller: _textEditingController, // can't have both
+                //   autofocus: true,
+                //   textAlign: TextAlign.center,
+                //   decoration: InputDecoration(
+                //     enabledBorder: UnderlineInputBorder(
+                //       borderSide: BorderSide(
+                //         color: Colors.lightBlueAccent,
+                //         width: 2,
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 SizedBox(
                   height: 20,
                 ),
@@ -82,10 +96,10 @@ class AddTaskScreen extends StatelessWidget {
                     if (task.isNotEmpty) {
                       if (taskEnum == TaskEnum.ADD) {
                         Provider.of<Data>(context, listen: false)
-                            .addNewTask(task);
+                            .addNewTask(task.trim());
                       } else if (taskEnum == TaskEnum.EDIT) {
                         Provider.of<Data>(context, listen: false)
-                            .editTask(newTitle: task, index: index);
+                            .editTask(newTitle: task.trim(), index: index);
                       }
                     }
 
